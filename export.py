@@ -5,9 +5,9 @@ from torchvision.transforms.functional import pil_to_tensor
 from torchvision.datasets.folder import pil_loader
 from model import SimpleCNN
 
-
-HEAD_BLOCK = """#define IMAGE_H 32
-#define IMAGE_W 32
+IMAGE_SIZE = 31
+HEAD_BLOCK = f"""#define IMAGE_H {IMAGE_SIZE}
+#define IMAGE_W {IMAGE_SIZE}
 #define KERNEL_H 3
 #define KERNEL_W 3
 """
@@ -52,8 +52,7 @@ def export_model(model: SimpleCNN):
         fuse_conv_bn(model.conv_1, model.bn_1),
         fuse_conv_bn(model.conv_2, model.bn_2),
         fuse_conv_bn(model.conv_3, model.bn_3),
-        fuse_conv_bn(model.conv_4, model.bn_4),
-        model.classifier,  # 最后一层没有BN
+        model.conv_4,  # 最后一层没有BN
     ]
 
     # 自动生成C语言头文件，包含卷积核参数、偏置、输入输出尺寸等
@@ -96,7 +95,7 @@ if __name__ == "__main__":
     # 加载一张示例图像，打印出32x32的图像数据与pytorch的输出，用于验证C语言模型的正确性
     test_image = pil_loader("./data/test/dog/blenheim_spaniel_s_000123.png")
     test_image = test_image.convert("L")
-    test_image = test_image.resize((32, 32))
+    test_image = test_image.resize((IMAGE_SIZE, IMAGE_SIZE))
     test_image = pil_to_tensor(test_image) / 255.0
     print("图像数据: ")
     print(",".join([str(x) for x in test_image.flatten().tolist()]))

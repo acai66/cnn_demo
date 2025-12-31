@@ -10,12 +10,11 @@ from dataset import get_data_loaders
 
 
 def main():
-    num_epochs = 500  # 训练轮数
-    batch_size = 32  # 批次大小
+    num_epochs = 3000  # 训练轮数
+    batch_size = 128  # 批次大小
     learning_rate = 0.001  # 学习率
     weight_decay = 1e-4  # 权重衰减
-    num_classes = 2  # 类别数
-    image_size = (32, 32)  # 图像大小
+    image_size = (31, 31)  # 图像大小
     data_dir = "./data"  # 数据目录
     checkpoint_dir = "./checkpoints"  # 模型保存目录
 
@@ -28,7 +27,7 @@ def main():
     print(f"使用设备: {device} 进行训练")
 
     print("初始化模型...")
-    model = SimpleCNN(input_channels=1, num_classes=num_classes).to(device)
+    model = SimpleCNN(input_channels=1, num_classes=len(train_loader.dataset.classes)).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.AdamW(
         model.parameters(), lr=learning_rate, weight_decay=weight_decay
