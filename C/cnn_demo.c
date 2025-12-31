@@ -76,7 +76,10 @@ int main() {
         KERNEL_H, KERNEL_W
     );
 
-    printf("Output: %.6f, %.6f\n", *(conv_5_output+0), *(conv_5_output+1)); // 二分类，最后一层输出两个浮点数，谁大就是那一类
+    printf("Output:\n"); // 分类，最后一层输出多个浮点数，第几个大就是第几类
+    for (int i = 0; i < CONV_5_OUT_CHANNELS; i++) {
+        printf("%3d: %.6f\n", i, conv_5_output[i]);
+	}
 
     free(conv_1_output);
     free(conv_2_output);
